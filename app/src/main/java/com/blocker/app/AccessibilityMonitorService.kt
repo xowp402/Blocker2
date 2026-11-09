@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.SystemClock
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import java.util.Locale
 
 /**
  * Local-only word scanner.
@@ -47,7 +46,7 @@ class AccessibilityMonitorService : AccessibilityService() {
         }
         if (visibleText.isBlank()) return
 
-        val matched = words.any { rule -> containsWholeRule(visibleText, rule) }
+        val matched = words.any { rule -> WordTextMatcher.containsRule(visibleText, rule) }
         if (!matched) return
 
         val durationMinutes = prefs.getInt(KEY_BLOCK_MINUTES, DEFAULT_BLOCK_MINUTES)
@@ -89,29 +88,6 @@ class AccessibilityMonitorService : AccessibilityService() {
             appendNodeText(node.getChild(index), out, depth + 1)
         }
     }
-
-    /**
-     * Normalize Persian/Arabic variants and whitespace, but retain word
-     * boundaries so a rule such as "سلام" does not match "سلامت".
-     */
-    private fun containsWholeRule(text: String, rule: String): Boolean {
-        val normalizedText = normalize(text)
-        val normalizedRule = normalize(rule)
-        if (normalizedRule.isEmpty()) return false
-        val escaped = Regex.escape(normalizedRule)
-        val pattern = Regex("(?<![\\p{L}\\p{N}])$escaped(?![\\p{L}\\p{N}])")
-        return pattern.containsMatchIn(normalizedText)
-    }
-
-    private fun normalize(value: String): String = value
-        .lowercase(Locale.ROOT)
-        .replace('ي', 'ی')
-        .replace('ى', 'ی')
-        .replace('ك', 'ک')
-        .replace(Regex("[\\u064B-\\u065F\\u0670\\u0640]"), "")
-        .replace(Regex("[\\u200B\\u200C\\u200D\\uFEFF]"), "")
-        .replace(Regex("\\s+"), " ")
-        .trim()
 
     override fun onInterrupt() = Unit
 
