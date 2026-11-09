@@ -2,7 +2,6 @@ package com.blocker.app
 
 import android.accessibilityservice.AccessibilityService
 import android.content.SharedPreferences
-import android.os.SystemClock
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
@@ -14,9 +13,6 @@ import android.view.accessibility.AccessibilityNodeInfo
  * or encrypted/inaccessible message. Blocker2 never scans its own UI.
  */
 class AccessibilityMonitorService : AccessibilityService() {
-    private var lastActionElapsed = 0L
-    private val actionDebounceMs = 900L
-
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event ?: return
         val targetPackage = event.packageName?.toString()?.takeIf { it.isNotBlank() } ?: return
@@ -28,7 +24,7 @@ class AccessibilityMonitorService : AccessibilityService() {
         val nowWall = System.currentTimeMillis()
         val blockedUntil = prefs.getLong(BLOCKED_UNTIL_PREFIX + targetPackage, 0L)
         if (blockedUntil > nowWall) {
-            sendHomeIfNeeded(targetPackage)
+            performGlobalAction(GLOBAL_ACTION_HOME)
             return
         }
         if (blockedUntil != 0L) {
@@ -70,13 +66,6 @@ class AccessibilityMonitorService : AccessibilityService() {
     private fun isPackageMonitored(prefs: SharedPreferences, targetPackage: String): Boolean {
         val selected = prefs.getStringSet(KEY_MONITORED_PACKAGES, emptySet()).orEmpty()
         return prefs.getBoolean(KEY_MONITOR_ALL_APPS, true) || targetPackage in selected
-    }
-
-    private fun sendHomeIfNeeded(targetPackage: String) {
-        val now = SystemClock.elapsedRealtime()
-        if (now - lastActionElapsed < actionDebounceMs) return
-        lastActionElapsed = now
-        performGlobalAction(GLOBAL_ACTION_HOME)
     }
 
     private fun appendNodeText(node: AccessibilityNodeInfo?, out: StringBuilder, depth: Int) {
