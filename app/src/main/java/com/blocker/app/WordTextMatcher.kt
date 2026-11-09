@@ -12,7 +12,7 @@ object WordTextMatcher {
         val normalizedRule = normalize(rule)
         if (normalizedRule.isEmpty()) return false
         val pattern = Regex(
-            "(?<![\\p{L}\\p{N}])\${Regex.escape(normalizedRule)}(?![\\p{L}\\p{N}])"
+            "(?<![\\p{L}\\p{N}])" + Regex.escape(normalizedRule) + "(?![\\p{L}\\p{N}])"
         )
         return pattern.containsMatchIn(normalizedText)
     }
