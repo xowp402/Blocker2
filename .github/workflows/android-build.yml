@@ -2,7 +2,7 @@ name: Android Build
 
 on:
   push:
-    branches: ["main", "blocker2-build-20261109"]
+    branches: ["main", "blocker2-build-20261109", "blocker2-production-rebuild"]
   workflow_dispatch:
 
 permissions:
