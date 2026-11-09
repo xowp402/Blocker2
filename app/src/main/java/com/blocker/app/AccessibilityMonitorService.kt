@@ -50,7 +50,9 @@ class AccessibilityMonitorService : AccessibilityService() {
         prefs.edit()
             .putLong(BLOCKED_UNTIL_PREFIX + targetPackage, nowWall + durationMinutes * 60_000L)
             .apply()
-        sendHomeIfNeeded(targetPackage)
+
+        // Immediately leave the target app after a matching rule is detected.
+        performGlobalAction(GLOBAL_ACTION_HOME)
     }
 
     private fun isRelevantEvent(type: Int): Boolean =
