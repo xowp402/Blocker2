@@ -109,7 +109,8 @@ class AccessibilityMonitorService : AccessibilityService() {
         .replace('ى', 'ی')
         .replace('ك', 'ک')
         .replace(Regex("[\\u064B-\\u065F\\u0670\\u0640]"), "")
-        .replace(Regex("[\\s\\u200B\\u200C\\u200D\\uFEFF]+"), " ")
+        .replace(Regex("[\\u200B\\u200C\\u200D\\uFEFF]"), "")
+        .replace(Regex("\\s+"), " ")
         .trim()
 
     override fun onInterrupt() = Unit
