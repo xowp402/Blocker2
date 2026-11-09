@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><string name="app_name">Blocker2</string><string name="accessibility_service_description">تشخیص محلی واژه‌های مسدودشده در متن قابل‌دسترسی برنامه‌ها.</string></resources>
+<resources>
+    <string name="app_name">Blocker2</string>
+    <string name="accessibility_service_name">Blocker2 Word Filter</string>
+    <string name="accessibility_service_description">برای فیلتر محلی واژه‌ها، متن قابل‌دسترسی برنامه‌هایی را که انتخاب می‌کنید بررسی می‌کند. محتوای بررسی‌شده به سرور ارسال نمی‌شود.</string>
+</resources>
