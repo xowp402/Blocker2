@@ -70,7 +70,7 @@ class AccessibilityMonitorService : AccessibilityService() {
      */
     private fun isPackageMonitored(prefs: SharedPreferences, targetPackage: String): Boolean {
         val selected = prefs.getStringSet(KEY_MONITORED_PACKAGES, emptySet()).orEmpty()
-        return selected.isEmpty() || targetPackage in selected
+        return prefs.getBoolean(KEY_MONITOR_ALL_APPS, true) || targetPackage in selected
     }
 
     private fun sendHomeIfNeeded(targetPackage: String) {
@@ -119,6 +119,7 @@ class AccessibilityMonitorService : AccessibilityService() {
         const val KEY_BLOCKED_WORDS = "blocked_words"
         const val KEY_BLOCK_MINUTES = "block_minutes"
         const val KEY_MONITORED_PACKAGES = "monitored_packages"
+        const val KEY_MONITOR_ALL_APPS = "monitor_all_apps"
         private const val BLOCKED_UNTIL_PREFIX = "blocked_until:"
         private const val DEFAULT_BLOCK_MINUTES = 2
         private const val MAX_BLOCK_MINUTES = 120
